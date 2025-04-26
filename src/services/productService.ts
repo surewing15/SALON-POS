@@ -6,13 +6,13 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  category: string;
-  description: string;
-  image: string;
+  category: number;
+  description: string | null;
+  image: string | null;
+  created_at: string;
+  updated_at: string;
 }
-
 const ProductService = {
-  
   getProducts: async (
     filter: string = "ALL",
     searchTerm: string = ""
@@ -44,7 +44,6 @@ const ProductService = {
     }
   },
 
-
   createProduct: async (productData: Product): Promise<Product> => {
     try {
       const response = await axios.post(`${API_URL}/products`, productData, {
@@ -57,7 +56,6 @@ const ProductService = {
     }
   },
 
- 
   updateProduct: async (id: number, productData: Product): Promise<Product> => {
     try {
       const response = await axios.put(

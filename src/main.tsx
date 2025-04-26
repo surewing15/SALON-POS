@@ -10,6 +10,8 @@ import Dashboard from "./pages/dashboard.tsx";
 import Pos from "./pages/pos/SalonPOS.tsx";
 import AddProduct from "./pages/pos/add_product.tsx";
 
+import Inventory from "./pages/inventory/Inventory.tsx";
+
 import Product_Registration from "./pages/product/register.tsx";
 import Product_List from "./pages/product/list.tsx";
 
@@ -21,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/pos" element={<Pos />} />
         <Route path="/add-product" element={<AddProduct />} />
+        <Route path="/inventory" element={<Inventory />} />
         <Route path="/product" element={<Product_List />} />
         <Route path="/product/create" element={<Product_Registration />} />
       </Routes>

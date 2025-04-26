@@ -14,6 +14,7 @@ export interface Sale {
   id?: number;
   invoice_number?: string;
   cart_items: SaleItem[];
+  saleItems?: SaleItem[];
   sub_total: number;
   total_discount: number;
   grand_total: number;
@@ -46,7 +47,7 @@ interface StatParams {
 const SaleService = {
   /**
    * Create a new sale
-   * @param {Sale} saleData - The sale data including cart items, totals, and payment details
+   * @param {Sale} saleData  data including cart items, totals, and payment details
    * @returns {Promise<any>} - Response from API with sale and receipt data
    */
   createSale: async (saleData: Sale): Promise<any> => {
@@ -258,6 +259,35 @@ const SaleService = {
       return response.data;
     } catch (error) {
       console.error("Error retrieving daily summary:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get inventory sales report
+   * @param {Object} filters - Filters like date range and status
+   * @returns {Promise<any>} - Response with aggregated inventory data
+   */
+  getInventoryReport: async (filters = {}): Promise<any> => {
+    try {
+      const response = await axios.get(`${API_URL}/inventory-report`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      // Transform the data if needed to match the frontend expected format
+      const inventoryData = response.data || [];
+
+      // Ensure data consistency and type handling
+      return inventoryData.map((item: any) => ({
+        id: parseInt(item.id) || 0,
+        name: item.name || "Unknown Product",
+        price: parseFloat(item.price || 0),
+        quantity: parseInt(item.quantity || 0),
+        revenue: parseFloat(item.revenue || 0),
+      }));
+    } catch (error) {
+      console.error("Error fetching inventory report:", error);
       throw error;
     }
   },
