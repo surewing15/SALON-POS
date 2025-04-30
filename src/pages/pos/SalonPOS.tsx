@@ -550,8 +550,8 @@ const SalonPOS: React.FC = () => {
                     <div className="flex px-4 py-2 bg-pink-200 text-sm font-medium">
                       <div className="w-6"></div>
                       <div className="flex-1">Item</div>
-                      <div className="w-20 text-right">Unit Price</div>
-                      <div className="w-20 text-right">Item Discount</div>
+                      {/* <div className="w-20 text-right">Unit Price</div> */}
+                      {/* <div className="w-20 text-right">Item Discount</div> */}
                       <div className="w-16 text-right">Total</div>
                       <div className="w-8 text-center">Action</div>
                     </div>
@@ -572,12 +572,12 @@ const SalonPOS: React.FC = () => {
                               />
                             </div>
                             <div className="flex-1 truncate">{item.name}</div>
-                            <div className="w-20 text-right">
+                            {/* <div className="w-20 text-right">
                               {formatPrice(item.price)}
-                            </div>
-                            <div className="w-20 text-right">
+                            </div> */}
+                            {/* <div className="w-20 text-right">
                               {formatPrice(item.discount)}
-                            </div>
+                            </div> */}
                             <div className="w-16 text-right">
                               {formatPrice(item.total)}
                             </div>

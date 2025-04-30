@@ -1,4 +1,3 @@
-// src/services/SaleService.ts
 import axios from "axios";
 import { API_URL, getHeaders } from "../config/api";
 
@@ -42,6 +41,32 @@ interface StatParams {
   period: string;
   start_date?: string;
   end_date?: string;
+}
+
+export interface ChartDataPoint {
+  name: string;
+  value: number;
+  revenue: number;
+}
+
+export interface TopProduct {
+  product_name: string;
+  count: number;
+  revenue: number;
+}
+
+export interface SaleStats {
+  today: number;
+  yesterday: number;
+  total: number;
+  trend: number;
+}
+
+export interface RevenueStats {
+  today: number;
+  yesterday: number;
+  total: number;
+  trend: number;
 }
 
 const SaleService = {
@@ -275,10 +300,8 @@ const SaleService = {
         headers: getHeaders(),
       });
 
-      // Transform the data if needed to match the frontend expected format
       const inventoryData = response.data || [];
 
-      // Ensure data consistency and type handling
       return inventoryData.map((item: any) => ({
         id: parseInt(item.id) || 0,
         name: item.name || "Unknown Product",
@@ -288,6 +311,77 @@ const SaleService = {
       }));
     } catch (error) {
       console.error("Error fetching inventory report:", error);
+      throw error;
+    }
+  },
+
+  getDashboardStats: async (
+    startDate: string,
+    endDate: string
+  ): Promise<{ sales: SaleStats; revenue: RevenueStats }> => {
+    try {
+      const statsData = await SaleService.getSalesStats(
+        "custom",
+        startDate,
+        endDate
+      );
+
+      return {
+        sales: {
+          today: statsData.sales?.today || 0,
+          yesterday: statsData.sales?.yesterday || 0,
+          total: statsData.sales?.total || 0,
+          trend: statsData.sales?.trend || 0,
+        },
+        revenue: {
+          today: statsData.revenue?.today || 0,
+          yesterday: statsData.revenue?.yesterday || 0,
+          total: statsData.revenue?.total || 0,
+          trend: statsData.revenue?.trend || 0,
+        },
+      };
+    } catch (error) {
+      console.error("Error getting dashboard stats:", error);
+      throw error;
+    }
+  },
+
+  getWeeklySalesData: async (
+    startDate: string,
+    endDate: string
+  ): Promise<ChartDataPoint[]> => {
+    try {
+      const response = await axios.get(`${API_URL}/sales/chart-data`, {
+        params: { start_date: startDate, end_date: endDate },
+        headers: getHeaders(),
+      });
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching weekly sales data:", error);
+      throw error;
+    }
+  },
+
+  getTopProducts: async (
+    startDate: string,
+    endDate: string
+  ): Promise<TopProduct[]> => {
+    try {
+      const inventoryData = await SaleService.getInventoryReport({
+        date_from: startDate,
+        date_to: endDate,
+        limit: 5,
+      });
+
+      return inventoryData
+        .map((item: any) => ({
+          product_name: item.name || "Unknown Product",
+          count: parseInt(item.quantity || 0),
+          revenue: parseFloat(item.revenue || 0),
+        }))
+        .sort((a: TopProduct, b: TopProduct) => b.revenue - a.revenue);
+    } catch (error) {
+      console.error("Error fetching top products:", error);
       throw error;
     }
   },

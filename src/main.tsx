@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 
 import "./assets/css/style.css";
 import Login from "./pages/Login.tsx";
-import Dashboard from "./pages/dashboard.tsx";
+import Dashboard from "./pages/dashboard/dashboard.tsx";
 import Pos from "./pages/pos/SalonPOS.tsx";
 import AddProduct from "./pages/pos/add_product.tsx";
 
